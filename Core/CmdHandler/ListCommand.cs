@@ -45,11 +45,20 @@ public class ListCommand
         try
         {
             vault.LoadVault();
-            table.AddColumn("Vault Repositories");
-            foreach (var repo in vault.GetVaultRepos())
-                table.AddRow(new Text(repo.repo_name));
+            if (vault.GetVaultRepos().Count == 0)
+            {
+                AnsiConsole.Write(
+                    new Markup(CLI.Note("There are no restic repositories in this vault.\n"))
+                );
+            }
+            else
+            {
+                table.AddColumn("Vault Repositories");
+                foreach (var repo in vault.GetVaultRepos())
+                    table.AddRow(new Text(repo.repo_name));
 
-            AnsiConsole.Write(table);
+                AnsiConsole.Write(table);
+            }
         }
         catch (InvalidVaultException e)
         {
