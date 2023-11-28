@@ -10,7 +10,7 @@ public class HelpMenu
     /// <param name="commands">A dictionary of commands and their descriptions.</param>
     /// <param name="description">
     ///     An optional description of the command.
-    ///     The table will print out "Switches" if this is not empty.
+    ///     The table will print out "Option" if this is not empty.
     /// </param>
     public static void GenerateHelpMenu(
         string usage,
@@ -35,13 +35,11 @@ public class HelpMenu
         );
 
         var command_table = new Table();
-        command_table.AddColumn("Command");
+        command_table.AddColumn(String.IsNullOrEmpty(description) ? "Command" : "Option");
         command_table.AddColumn("Description");
 
         foreach (KeyValuePair<string, string> command in commands)
-        {
             command_table.AddRow(command.Key, command.Value);
-        }
 
         AnsiConsole.Write(command_table);
     }

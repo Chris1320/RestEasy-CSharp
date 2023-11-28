@@ -15,6 +15,8 @@ class Info
         { "add", $"Add a new restic repository within an existing {Info.Name} vault." },
         { "remove", $"Remove an existing repository from an existing {Info.Name} vault." },
         { "list", $"List restic repositories in a {Info.Name} vault." },
+        { "info", $"Show information about a {Info.Name} vault or a specific restic repository." },
+        { "backup", $"Perform a backup of a single, a group of, or all restic repositories." },
     };
     public static Dictionary<string, string> InitOptions = new Dictionary<string, string>()
     {
@@ -23,16 +25,16 @@ class Info
         { "-p, --password", "Specify the password for the repositories in the vault." },
         { "-s, --snapshots", "Specify how many snapshots to keep by default." },
     };
-    public static Dictionary<string, string> ListOptions = new Dictionary<string, string>()
-    {
-        { "-h, --help", "Show help information." },
-        { "-d, --data", "Specify the data directory." },
-    };
     public static Dictionary<string, string> AddOptions = new Dictionary<string, string>()
     {
         { "-h, --help", "Show help information." },
         { "-d, --data", "Specify the data directory." },
         { "-n, --name", "Specify the name of the repository." },
         { "-s, --snapshots", "Specify how many snapshots to keep in this repository." },
+    };
+    public static Dictionary<string, string> ListOptions = new Dictionary<string, string>()
+    {
+        { "-h, --help", "Show help information." },
+        { "-d, --data", "Specify the data directory." },
     };
 }

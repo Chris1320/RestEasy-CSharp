@@ -34,6 +34,16 @@ namespace RestEasy
                 case "list":
                     return new ListCommand().Main(args[1..]);
 
+                case "info":
+                    // TODO: Implement info command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
+                case "backup":
+                    // TODO: Implement backup command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
                 default:
                     AnsiConsole.Write(new Markup(CLI.Warn($"Unknown command `{args[0]}`.\n")));
                     HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
