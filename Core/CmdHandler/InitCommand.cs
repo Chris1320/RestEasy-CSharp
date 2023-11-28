@@ -78,7 +78,7 @@ class InitCommand
         }
         catch (Exception e)
         {
-            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            AnsiConsole.WriteException(e);
             return 1;
         }
         AnsiConsole.Write(
