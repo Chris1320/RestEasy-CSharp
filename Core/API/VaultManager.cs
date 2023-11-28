@@ -163,5 +163,6 @@ class VaultManager
             );
 
         this._config.restic_repos.Add(repo);
+        this.SaveVault();
     }
 }
