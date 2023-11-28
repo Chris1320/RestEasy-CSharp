@@ -21,10 +21,7 @@ namespace RestEasy
                     break;
 
                 case "init":
-                    // return new InitCommand().Main(args[1..]);
-                    // TODO: Implement init command.
-                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
-                    return 2;
+                    return new InitCommand().Main(args[1..]);
 
                 case "new":
                     // TODO: Implement new command.
