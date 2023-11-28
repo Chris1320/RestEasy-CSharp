@@ -8,6 +8,10 @@ public class HelpMenu
     ///
     /// <param name="usage">A string showing how to use the command.</param>
     /// <param name="commands">A dictionary of commands and their descriptions.</param>
+    /// <param name="description">
+    ///     An optional description of the command.
+    ///     The table will print out "Switches" if this is not empty.
+    /// </param>
     public static void GenerateHelpMenu(
         string usage,
         Dictionary<string, string> commands,
