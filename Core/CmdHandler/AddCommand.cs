@@ -86,7 +86,7 @@ public class AddCommand
             );
             return 0;
         }
-        catch (InvalidVaultException e)
+        catch (Exception e) when (e is InvalidVaultException || e is ArgumentException)
         {
             AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
             return 1;

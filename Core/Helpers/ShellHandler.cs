@@ -12,6 +12,7 @@ public class ShellHandler
     /// <returns>A ProcessResult object.</returns>
     public static ProcessResult RunRestic(string repo_path, string repo_password, string command)
     {
+        // FIXME: This should be in the ResticManager.cs file.
         var start_info = new System.Diagnostics.ProcessStartInfo()
         {
             FileName = "restic",
