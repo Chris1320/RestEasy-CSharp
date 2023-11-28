@@ -18,7 +18,7 @@ namespace RestEasy
             {
                 case "help":
                     HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
-                    break;
+                    return 0;
 
                 case "init":
                     return new InitCommand().Main(args[1..]);
@@ -39,8 +39,6 @@ namespace RestEasy
                     HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
                     return 1;
             }
-
-            return 0;
         }
     }
 }
