@@ -45,7 +45,7 @@ public class ListCommand
         try
         {
             vault.LoadVault();
-            if (vault.GetVaultRepos().Count == 0)
+            if (vault.config.restic_repos.Count == 0)
             {
                 AnsiConsole.Write(
                     new Markup(CLI.Note("There are no restic repositories in this vault.\n"))
@@ -54,7 +54,7 @@ public class ListCommand
             else
             {
                 table.AddColumn("Vault Repositories");
-                foreach (var repo in vault.GetVaultRepos())
+                foreach (var repo in vault.config.restic_repos)
                     table.AddRow(new Text(repo.repo_name));
 
                 AnsiConsole.Write(table);

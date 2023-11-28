@@ -7,7 +7,7 @@ class VaultManager
 
     // Default data directory
     private string _data_dir = Path.Combine(System.Environment.CurrentDirectory, "vault");
-    private VaultConfig? config = null; // Will only be assigned a value when the vault is loaded.
+    private VaultConfig? _config = null; // Will only be assigned a value when the vault is loaded.
 
     public string data_dir
     {
@@ -24,6 +24,16 @@ class VaultManager
     public string config_path
     {
         get { return Path.Combine(this.data_dir, "config.json"); }
+    }
+    public VaultConfig config // provided for outside use.
+    {
+        get
+        {
+            if (this._config == null)
+                throw new VaultNotLoadedException("The vault has not been loaded yet.");
+
+            return this._config;
+        }
     }
 
     public VaultManager() { }
@@ -78,22 +88,20 @@ class VaultManager
     public void CreateVault(string vault_password = "", uint? max_snapshots = null)
     {
         var rand = new Randomizer();
+        // HACK: Since the default password length is a constant,
+        // is the possibility of an overflow attack still possible?
         vault_password = string.IsNullOrEmpty(vault_password)
-            // HACK: Since the default password length is a constant,
-            // is the possibility of an overflow attack still possible?
             ? rand.GenerateRandomString((int)VaultManager.VAULT_PASSWORD_LENGTH)
             : vault_password;
 
-        this.config = new VaultConfig(
+        this._config = new VaultConfig(
             vault_password,
             new List<ResticRepoConfig> { },
             max_snapshots ?? VaultManager.MAX_SNAPSHOTS
         );
 
         this.CreateDataDir();
-        string config_file_data = JsonSerializer.Serialize(this.config);
-
-        File.WriteAllText(this.config_path, config_file_data);
+        this.SaveVault();
     }
 
     /// <summary>
@@ -107,14 +115,54 @@ class VaultManager
             );
 
         string config_file_data = File.ReadAllText(this.config_path);
-        this.config = JsonSerializer.Deserialize<VaultConfig>(config_file_data);
+        this._config = JsonSerializer.Deserialize<VaultConfig>(config_file_data);
     }
 
-    public List<ResticRepoConfig> GetVaultRepos()
+    /// <summary>
+    /// Save the vault configuration file changes.
+    /// </summary>
+    public void SaveVault()
     {
-        if (this.config is null)
+        if (this._config == null)
             throw new VaultNotLoadedException("The vault has not been loaded yet.");
 
-        return this.config.restic_repos;
+        File.WriteAllText(this.config_path, JsonSerializer.Serialize(this._config));
+    }
+
+    /// <summary>
+    /// Add a repository to the vault.
+    /// </summary>
+    /// <param name="repo">The repository to add.</param>
+    public void AddRepository(ResticRepoConfig repo)
+    {
+        if (this._config == null)
+            throw new VaultNotLoadedException("The vault has not been loaded yet.");
+
+        if (String.IsNullOrEmpty(repo.repo_name))
+            throw new ArgumentException("The repository name cannot be empty.");
+
+        if (repo.backup_filepaths.Count == 0)
+            throw new ArgumentException("There should be at least one filepath to back up.");
+
+        foreach (var filepath in repo.backup_filepaths)
+        {
+            if (!File.Exists(filepath) && !Directory.Exists(filepath))
+                throw new ArgumentException($"The backup filepath `{filepath}` does not exist.\n");
+        }
+
+        if (
+            ShellHandler
+                .RunRestic(
+                    Path.Combine(this.repos_dir, repo.repo_name),
+                    this._config.vault_password,
+                    "init"
+                )
+                .exit_code != 0
+        )
+            throw new ResticException(
+                $"Could not initialize the restic repository `{repo.repo_name}`."
+            );
+
+        this._config.restic_repos.Add(repo);
     }
 }

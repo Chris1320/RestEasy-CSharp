@@ -12,7 +12,7 @@ class Info
     {
         { "help", "Show help information." },
         { "init", $"Initialize a new {Info.Name} vault." },
-        { "new", $"Create a new restic repository within an existing {Info.Name} vault." },
+        { "add", $"Add a new restic repository within an existing {Info.Name} vault." },
         { "remove", $"Remove an existing repository from an existing {Info.Name} vault." },
         { "list", $"List restic repositories in a {Info.Name} vault." },
     };
@@ -21,11 +21,18 @@ class Info
         { "-h, --help", "Show help information." },
         { "-d, --data", "Specify the data directory." },
         { "-p, --password", "Specify the password for the repositories in the vault." },
-        { "-s, --snapshots", "Specify how many snapshots to keep." },
+        { "-s, --snapshots", "Specify how many snapshots to keep by default." },
     };
     public static Dictionary<string, string> ListOptions = new Dictionary<string, string>()
     {
         { "-h, --help", "Show help information." },
         { "-d, --data", "Specify the data directory." },
+    };
+    public static Dictionary<string, string> AddOptions = new Dictionary<string, string>()
+    {
+        { "-h, --help", "Show help information." },
+        { "-d, --data", "Specify the data directory." },
+        { "-n, --name", "Specify the name of the repository." },
+        { "-s, --snapshots", "Specify how many snapshots to keep in this repository." },
     };
 }
