@@ -43,7 +43,7 @@ class VaultManager
     private void CreateDataDir()
     {
         if (Directory.Exists(this.data_dir))
-            throw new VaultAlreadyExists($"The data directory {this.data_dir} already exists.");
+            throw new VaultAlreadyExists($"The vault directory `{this.data_dir}` already exists.");
 
         Directory.CreateDirectory(this.data_dir);
         Directory.CreateDirectory(this.repos_dir);

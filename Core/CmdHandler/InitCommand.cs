@@ -76,6 +76,11 @@ class InitCommand
         {
             vault.CreateVault(vault_password, max_snapshots);
         }
+        catch (VaultAlreadyExists e)
+        {
+            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            return 1;
+        }
         catch (Exception e)
         {
             AnsiConsole.WriteException(e);
