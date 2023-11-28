@@ -6,7 +6,7 @@ class VaultManager
     public const uint VAULT_PASSWORD_LENGTH = 16; // Default vault password length
 
     // Default data directory
-    private string _data_dir = Path.Combine(System.Environment.CurrentDirectory, "data");
+    private string _data_dir = Path.Combine(System.Environment.CurrentDirectory, "vault");
     private VaultConfig? config = null; // Will only be assigned a value when the vault is loaded.
 
     public string data_dir
