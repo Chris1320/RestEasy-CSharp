@@ -6,13 +6,9 @@ class VaultManager
     public const uint VAULT_PASSWORD_LENGTH = 16; // Default vault password length
 
     // Default data directory
-    private string _data_dir = Path.Combine(System.Environment.CurrentDirectory, "vault");
+    public string data_dir { get; } = Path.Combine(System.Environment.CurrentDirectory, "vault");
     private VaultConfig? _config = null; // Will only be assigned a value when the vault is loaded.
 
-    public string data_dir
-    {
-        get { return _data_dir; }
-    }
     public string vault_name
     {
         get { return Path.GetFileName(this.data_dir); }
@@ -36,19 +32,13 @@ class VaultManager
         }
     }
 
-    public VaultManager() { }
-
     /// <param name="data_dir">The path to the data directory.</param>
-    public VaultManager(string data_dir)
+    public VaultManager(string data_dir = "")
     {
-        if (Path.IsPathRooted(data_dir))
-        {
-            this._data_dir = data_dir;
-        }
-        else
-        {
-            this._data_dir = Path.Combine(System.Environment.CurrentDirectory, data_dir);
-        }
+        if (!String.IsNullOrEmpty(data_dir))
+            this.data_dir = Path.IsPathRooted(data_dir)
+                ? data_dir
+                : Path.Combine(System.Environment.CurrentDirectory, data_dir);
     }
 
     /// <summary>
