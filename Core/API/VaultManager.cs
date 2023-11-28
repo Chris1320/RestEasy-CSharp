@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 class VaultManager
 {
     public const uint MAX_SNAPSHOTS = 5; // Default maximum number of snapshots to keep
@@ -11,9 +13,13 @@ class VaultManager
     {
         get { return _data_dir; }
     }
-    public VaultConfig? Config
+    public string repos_dir
     {
-        get { return config; }
+        get { return Path.Combine(this.data_dir, "repos"); }
+    }
+    public string config_path
+    {
+        get { return Path.Combine(this.data_dir, "config.json"); }
     }
 
     public VaultManager() { }
@@ -32,14 +38,26 @@ class VaultManager
     }
 
     /// <summary>
+    /// Create the directory structure for the vault.
+    /// </summary>
+    private void CreateDataDir()
+    {
+        if (Directory.Exists(this.data_dir))
+            throw new VaultAlreadyExists($"The data directory {this.data_dir} already exists.");
+
+        Directory.CreateDirectory(this.data_dir);
+        Directory.CreateDirectory(this.repos_dir);
+    }
+
+    /// <summary>
     /// Create a new vault.
     /// </summary>
     public void CreateVault(string vault_password = "", uint? max_snapshots = null)
     {
         var rand = new Randomizer();
         vault_password = string.IsNullOrEmpty(vault_password)
-            // HACK: Since the password length is a constant, is the possibility
-            // of an overflow attack still possible?
+            // HACK: Since the default password length is a constant,
+            // is the possibility of an overflow attack still possible?
             ? rand.GenerateRandomString((int)VaultManager.VAULT_PASSWORD_LENGTH)
             : vault_password;
 
@@ -48,6 +66,11 @@ class VaultManager
             new List<ResticRepoConfig> { },
             max_snapshots ?? VaultManager.MAX_SNAPSHOTS
         );
-        Console.WriteLine(this.config);
+
+        this.CreateDataDir();
+        string config_file_data = JsonSerializer.Serialize(this.config);
+
+        using (var stream = new StreamWriter(this.config_path))
+            stream.Write(config_file_data);
     }
 }

@@ -3,6 +3,8 @@
 /// </summary>
 public record VaultConfig
 {
+    public int vault_version { get; init; } = 1;
+
     // The password used to encrypt the vault. A password is mandatory for all restic repositories.
     // Relevant issues:
     // - https://github.com/restic/restic/issues/1018
