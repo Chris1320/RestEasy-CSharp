@@ -40,11 +40,11 @@ public class ListCommand
             }
         }
 
-        var table = new Table();
-        var vault = data_dir is null ? new VaultManager() : new VaultManager(data_dir);
         try
         {
+            var vault = data_dir is null ? new VaultManager() : new VaultManager(data_dir);
             vault.LoadVault();
+
             if (vault.config.restic_repos.Count == 0)
             {
                 AnsiConsole.Write(
@@ -53,22 +53,24 @@ public class ListCommand
             }
             else
             {
+                var table = new Table();
                 table.AddColumn("Vault Repositories");
                 foreach (var repo in vault.config.restic_repos)
                     table.AddRow(new Text(repo.repo_name));
 
                 AnsiConsole.Write(table);
             }
+            return 0;
         }
         catch (InvalidVaultException e)
         {
             AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            return 1;
         }
         catch (Exception e)
         {
             AnsiConsole.WriteException(e);
             return 1;
         }
-        return 0;
     }
 }
