@@ -149,6 +149,12 @@ class VaultManager
                 throw new ArgumentException($"The backup filepath `{filepath}` does not exist.\n");
         }
 
+        foreach (var existing_repo in this._config.restic_repos)
+        {
+            if (existing_repo.repo_name == repo.repo_name)
+                throw new ArgumentException($"The repository `{repo.repo_name}` already exists.");
+        }
+
         new ResticManager(
             Path.Combine(this.repos_dir, repo.repo_name),
             this._config.vault_password

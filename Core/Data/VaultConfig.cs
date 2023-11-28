@@ -12,6 +12,8 @@ public record VaultConfig
     public string vault_password { get; init; }
 
     // A list of directory names of restic repositories.
+    // PERF: What if we use a HashMap so that commands won't
+    // need to do a linear search when checking for restic repos?
     public List<ResticRepoConfig> restic_repos { get; set; }
 
     // The maximum number of snapshots to keep in each repository.
