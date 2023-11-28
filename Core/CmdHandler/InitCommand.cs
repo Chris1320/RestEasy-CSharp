@@ -1,10 +1,15 @@
 using Spectre.Console;
 
+/// <summary>
+/// This class handles the `init` command.
+/// </summary>
 class InitCommand
 {
     public int Main(string[] args)
     {
-        var config = new VaultConfig();
+        uint? max_snapshots = null;
+        string? data_dir = null;
+        string vault_password = String.Empty;
         for (int i = 0; i < args.Length; i++)
         {
             try
@@ -18,8 +23,32 @@ class InitCommand
 
                     case "-d":
                     case "--data":
-                        config.data_dir = args[++i];
+                        data_dir = args[++i];
                         continue;
+
+                    case "-p":
+                    case "--password":
+                        vault_password = args[++i];
+                        continue;
+
+                    case "-s":
+                    case "--snapshots":
+                        try
+                        {
+                            max_snapshots = uint.Parse(args[++i]);
+                            continue;
+                        }
+                        catch (OverflowException)
+                        {
+                            AnsiConsole.Write(
+                                new Markup(
+                                    CLI.Error(
+                                        $"The number of snapshots must be between 0 and {uint.MaxValue}.\n"
+                                    )
+                                )
+                            );
+                            return 1;
+                        }
 
                     default:
                         AnsiConsole.Write(new Markup(CLI.Error($"Unknown option: {args[i]}\n")));
@@ -33,7 +62,17 @@ class InitCommand
             }
         }
 
-        Console.WriteLine($"Data Dir: {config.data_dir}");
+        VaultManager vault;
+        if (data_dir == null)
+            vault = new VaultManager();
+        else
+            vault = new VaultManager(data_dir);
+
+        vault.CreateVault(vault_password, max_snapshots);
+        AnsiConsole.Write(
+            new Markup(CLI.Note($"The vault was created successfully in `{vault.data_dir}`.\n"))
+        );
+
         return 0;
     }
 }

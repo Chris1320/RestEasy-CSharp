@@ -1,5 +1,8 @@
 using Spectre.Console;
 
+/// <summary>
+/// A helper class that contains methods for formatting CLI output.
+/// </summary>
 class CLI
 {
     public static string Note(string str)
