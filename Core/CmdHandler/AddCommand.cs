@@ -55,6 +55,14 @@ public class AddCommand
             }
         }
 
+        if (backup_filepaths.Count == 0)
+        {
+            AnsiConsole.Write(
+                new Markup(CLI.Error("There should be at least one filepath to back up.\n"))
+            );
+            return 1;
+        }
+
         // Infer repository name from the first backup filepath.
         repo_name = String.IsNullOrEmpty(repo_name)
             ? Path.GetFileName(backup_filepaths[0])
