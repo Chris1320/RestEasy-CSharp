@@ -149,18 +149,10 @@ class VaultManager
                 throw new ArgumentException($"The backup filepath `{filepath}` does not exist.\n");
         }
 
-        if (
-            ShellHandler
-                .RunRestic(
-                    Path.Combine(this.repos_dir, repo.repo_name),
-                    this._config.vault_password,
-                    "init"
-                )
-                .exit_code != 0
-        )
-            throw new ResticException(
-                $"Could not initialize the restic repository `{repo.repo_name}`."
-            );
+        new ResticManager(
+            Path.Combine(this.repos_dir, repo.repo_name),
+            this._config.vault_password
+        ).Init();
 
         this._config.restic_repos.Add(repo);
         this.SaveVault();
