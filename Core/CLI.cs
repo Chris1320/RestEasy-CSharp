@@ -5,23 +5,23 @@ using Spectre.Console;
 /// </summary>
 class CLI
 {
-    public static string Note(string str)
+    public static string Note(string str, bool escape_markup = true)
     {
-        return $"[gray][[[/][green]i[/][gray]]][/] {str.EscapeMarkup()}";
+        return $"[gray][[[/][green]i[/][gray]]][/] {(escape_markup ? str.EscapeMarkup() : str)}";
     }
 
-    public static string Warn(string str)
+    public static string Warn(string str, bool escape_markup = true)
     {
-        return $"[gray][[[/][yellow]![/][gray]]][/] {str.EscapeMarkup()}";
+        return $"[gray][[[/][yellow]![/][gray]]][/] {(escape_markup ? str.EscapeMarkup() : str)}";
     }
 
-    public static string Error(string str)
+    public static string Error(string str, bool escape_markup = true)
     {
-        return $"[gray][[[/][red]E[/][gray]]][/] {str.EscapeMarkup()}";
+        return $"[gray][[[/][red]E[/][gray]]][/] {(escape_markup ? str.EscapeMarkup() : str)}";
     }
 
-    public static string Help(string str)
+    public static string Help(string str, bool escape_markup = true)
     {
-        return $"[gray][[[/][blue]?[/][gray]]][/] {str.EscapeMarkup()}";
+        return $"[gray][[[/][cyan]?[/][gray]]][/] {(escape_markup ? str.EscapeMarkup() : str)}";
     }
 }

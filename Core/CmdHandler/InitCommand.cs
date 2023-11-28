@@ -18,7 +18,11 @@ class InitCommand
                 {
                     case "-h":
                     case "--help":
-                        HelpMenu.GenerateHelpMenu("init [options]", Info.InitOptions);
+                        HelpMenu.GenerateHelpMenu(
+                            "init [options]",
+                            Info.InitOptions,
+                            "Initialize a new RestEasy vault."
+                        );
                         return 0;
 
                     case "-d":
@@ -68,7 +72,15 @@ class InitCommand
         else
             vault = new VaultManager(data_dir);
 
-        vault.CreateVault(vault_password, max_snapshots);
+        try
+        {
+            vault.CreateVault(vault_password, max_snapshots);
+        }
+        catch (Exception e)
+        {
+            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            return 1;
+        }
         AnsiConsole.Write(
             new Markup(CLI.Note($"The vault was created successfully in `{vault.data_dir}`.\n"))
         );

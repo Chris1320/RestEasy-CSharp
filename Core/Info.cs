@@ -20,5 +20,7 @@ class Info
     {
         { "-h, --help", "Show help information." },
         { "-d, --data", "Specify the data directory." },
+        { "-p, --password", "Specify the password for the repositories in the vault." },
+        { "-s, --snapshots", "Specify how many snapshots to keep." },
     };
 }

@@ -8,9 +8,27 @@ public class HelpMenu
     ///
     /// <param name="usage">A string showing how to use the command.</param>
     /// <param name="commands">A dictionary of commands and their descriptions.</param>
-    public static void GenerateHelpMenu(string usage, Dictionary<string, string> commands)
+    public static void GenerateHelpMenu(
+        string usage,
+        Dictionary<string, string> commands,
+        string description = ""
+    )
     {
-        AnsiConsole.Write(new Markup(CLI.Help($"Usage: {Info.FileName} {usage}\n\n")));
+        if (!string.IsNullOrEmpty(description))
+            AnsiConsole.Write(new Markup(CLI.Help($"{description}\n")));
+
+        AnsiConsole.Write(
+            new Markup(
+                CLI.Help(
+                    String.Format(
+                        "[dim italic]Usage:[/] [underline]{0} {1}[/]\n\n",
+                        Info.FileName.EscapeMarkup(),
+                        usage.EscapeMarkup()
+                    ),
+                    false
+                )
+            )
+        );
 
         var command_table = new Table();
         command_table.AddColumn("Command");
