@@ -47,7 +47,7 @@ class InitCommand
                             AnsiConsole.Write(
                                 new Markup(
                                     CLI.Error(
-                                        $"The number of snapshots must be between 0 and {uint.MaxValue}.\n"
+                                        $"The number of snapshots must be between {uint.MinValue} and {uint.MaxValue}.\n"
                                     )
                                 )
                             );
@@ -66,11 +66,7 @@ class InitCommand
             }
         }
 
-        VaultManager vault;
-        if (data_dir == null)
-            vault = new VaultManager();
-        else
-            vault = new VaultManager(data_dir);
+        VaultManager vault = data_dir == null ? new VaultManager() : new VaultManager(data_dir);
 
         try
         {

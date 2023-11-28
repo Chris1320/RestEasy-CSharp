@@ -9,6 +9,7 @@ public class ShellHandler
     /// <param name="repo_path">The path to the repository.</param>
     /// <param name="repo_password">The password for the repository.</param>
     /// <param name="command">The command to run.</param>
+    ///
     /// <returns>A ProcessResult object.</returns>
     public static ProcessResult RunRestic(string repo_path, string repo_password, string command)
     {
