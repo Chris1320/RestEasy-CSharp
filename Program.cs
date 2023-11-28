@@ -9,54 +9,41 @@ namespace RestEasy
             AnsiConsole.Write(new Markup($"{Info.Title}\n\n"));
             if (args.Length == 0)
             {
-                AnsiConsole.Write(
-                    new Markup(
-                        CLI.Warn(
-                            String.Format(
-                                "No arguments provided. Run `{0} help` for more information.\n",
-                                Info.FileName
-                            )
-                        )
-                    )
-                );
-                AnsiConsole.Write(new Markup(CLI.Help("Usage: resteasy <command> [options]\n")));
+                AnsiConsole.Write(new Markup(CLI.Warn(String.Format("No arguments provided\n"))));
+                HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
                 return 0;
             }
 
             switch (args[0])
             {
                 case "help":
-                    AnsiConsole.Write(
-                        new Markup(CLI.Help("Usage: resteasy <command> [options]\n\n"))
-                    );
-
-                    var command_table = new Table();
-                    command_table.AddColumn("Command");
-                    command_table.AddColumn("Description");
-
-                    foreach (KeyValuePair<string, string> command in Info.Commands)
-                    {
-                        command_table.AddRow(command.Key, command.Value);
-                    }
-
-                    AnsiConsole.Write(command_table);
+                    HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
                     break;
 
+                case "init":
+                    // return new InitCommand().Main(args[1..]);
+                    // TODO: Implement init command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
+                case "new":
+                    // TODO: Implement new command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
+                case "remove":
+                    // TODO: Implement remove command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
+                case "list":
+                    // TODO: Implement list command.
+                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
+                    return 2;
+
                 default:
-                    AnsiConsole.Write(
-                        new Markup(
-                            CLI.Warn(
-                                String.Format(
-                                    "Unknown command `{0}`. Run `{1} help` for more information.\n",
-                                    args[0],
-                                    Info.FileName
-                                )
-                            )
-                        )
-                    );
-                    AnsiConsole.Write(
-                        new Markup(CLI.Help("Usage: resteasy <command> [options]\n"))
-                    );
+                    AnsiConsole.Write(new Markup(CLI.Warn($"Unknown command `{args[0]}`.\n")));
+                    HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
                     return 1;
             }
 
