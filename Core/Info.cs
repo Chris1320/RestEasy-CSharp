@@ -21,20 +21,20 @@ class Info
     public static Dictionary<string, string> InitOptions = new Dictionary<string, string>()
     {
         { "-h, --help", "Show help information." },
-        { "-d, --data", "Specify the data directory." },
+        { "-v, --vault", "Specify the vault directory." },
         { "-p, --password", "Specify the password for the repositories in the vault." },
         { "-s, --snapshots", "Specify how many snapshots to keep by default." },
     };
     public static Dictionary<string, string> AddOptions = new Dictionary<string, string>()
     {
         { "-h, --help", "Show help information." },
-        { "-d, --data", "Specify the data directory." },
+        { "-v, --vault", "Specify the vault directory." },
         { "-n, --name", "Specify the name of the repository." },
         { "-s, --snapshots", "Specify how many snapshots to keep in this repository." },
     };
     public static Dictionary<string, string> ListOptions = new Dictionary<string, string>()
     {
         { "-h, --help", "Show help information." },
-        { "-d, --data", "Specify the data directory." },
+        { "-v, --vault", "Specify the vault directory." },
     };
 }

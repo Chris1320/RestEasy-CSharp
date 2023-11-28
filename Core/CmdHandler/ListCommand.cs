@@ -23,8 +23,8 @@ public class ListCommand
                         );
                         return 0;
 
-                    case "-d":
-                    case "--data":
+                    case "-v":
+                    case "--vault":
                         data_dir = args[++i];
                         continue;
 

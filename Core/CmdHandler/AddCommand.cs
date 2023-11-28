@@ -28,8 +28,8 @@ public class AddCommand
                         );
                         return 0;
 
-                    case "-d":
-                    case "--data":
+                    case "-v":
+                    case "--vault":
                         data_dir = args[++i];
                         continue;
 
