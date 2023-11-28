@@ -44,6 +44,7 @@ class VaultManager
     /// <summary>
     /// Check the directory structure of the vault.
     /// </summary>
+    ///
     /// <returns>True if the directory structure is valid, false otherwise.</returns>
     private bool CheckVaultStructure()
     {
@@ -54,6 +55,12 @@ class VaultManager
             && File.Exists(this.config_path);
     }
 
+    /// <summary>
+    /// Check if the structure of the vault is valid,
+    /// if the configuration files are valid,
+    /// and if the restic repositories are healthy.
+    /// </summary>
+    /// <returns>True if the vault is healthy, false otherwise.</returns>
     private bool CheckVaultHealth()
     {
         // TODO: Implement this.
