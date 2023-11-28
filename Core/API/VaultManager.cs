@@ -13,6 +13,10 @@ class VaultManager
     {
         get { return _data_dir; }
     }
+    public string vault_name
+    {
+        get { return Path.GetFileName(this.data_dir); }
+    }
     public string repos_dir
     {
         get { return Path.Combine(this.data_dir, "repos"); }
@@ -35,6 +39,25 @@ class VaultManager
         {
             this._data_dir = Path.Combine(System.Environment.CurrentDirectory, data_dir);
         }
+    }
+
+    /// <summary>
+    /// Check the directory structure of the vault.
+    /// </summary>
+    /// <returns>True if the directory structure is valid, false otherwise.</returns>
+    private bool CheckVaultStructure()
+    {
+        // If these files and directories exist,
+        // then the vault structure is valid.
+        return Directory.Exists(this.data_dir)
+            && Directory.Exists(this.repos_dir)
+            && File.Exists(this.config_path);
+    }
+
+    private bool CheckVaultHealth()
+    {
+        // TODO: Implement this.
+        return true;
     }
 
     /// <summary>
@@ -70,7 +93,28 @@ class VaultManager
         this.CreateDataDir();
         string config_file_data = JsonSerializer.Serialize(this.config);
 
-        using (var stream = new StreamWriter(this.config_path))
-            stream.Write(config_file_data);
+        File.WriteAllText(this.config_path, config_file_data);
+    }
+
+    /// <summary>
+    /// Load the vault configuration file.
+    /// </summary>
+    public void LoadVault()
+    {
+        if (!this.CheckVaultStructure())
+            throw new InvalidVaultException(
+                $"The directory `{this.data_dir}` is not a valid vault."
+            );
+
+        string config_file_data = File.ReadAllText(this.config_path);
+        this.config = JsonSerializer.Deserialize<VaultConfig>(config_file_data);
+    }
+
+    public List<ResticRepoConfig> GetVaultRepos()
+    {
+        if (this.config is null)
+            throw new VaultNotLoadedException("The vault has not been loaded yet.");
+
+        return this.config.restic_repos;
     }
 }

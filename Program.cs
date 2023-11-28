@@ -34,9 +34,7 @@ namespace RestEasy
                     return 2;
 
                 case "list":
-                    // TODO: Implement list command.
-                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
-                    return 2;
+                    return new ListCommand().Main(args[1..]);
 
                 default:
                     AnsiConsole.Write(new Markup(CLI.Warn($"Unknown command `{args[0]}`.\n")));
