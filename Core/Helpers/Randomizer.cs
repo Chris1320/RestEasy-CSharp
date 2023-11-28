@@ -20,11 +20,11 @@ public class Randomizer
     /// <param name="length">The length of the random string.</param>
     ///
     /// <returns>A random string.</returns>
-    public string GenerateRandomString(int length)
+    public string GenerateRandomString(uint length)
     {
         var result = new StringBuilder();
 
-        for (int i = 0; i < length; i++)
+        for (uint i = 0; i < length; i++)
             result.Append(this.charset[this.random.Next() % this.charset.Length]);
 
         return result.ToString();

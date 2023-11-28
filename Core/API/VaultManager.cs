@@ -82,13 +82,17 @@ class VaultManager
     /// <summary>
     /// Create a new vault.
     /// </summary>
+    ///
+    /// <param name="vault_password">
+    /// The password for the vault.
+    /// If left empty, it will be a random string of characters.
+    /// </param>
+    /// <param name="max_snapshots">How many snapshots to keep in each repository by default.</param>
     public void CreateVault(string vault_password = "", uint? max_snapshots = null)
     {
         var rand = new Randomizer();
-        // HACK: Since the default password length is a constant,
-        // is the possibility of an overflow attack still possible?
         vault_password = string.IsNullOrEmpty(vault_password)
-            ? rand.GenerateRandomString((int)VaultManager.VAULT_PASSWORD_LENGTH)
+            ? rand.GenerateRandomString(VaultManager.VAULT_PASSWORD_LENGTH)
             : vault_password;
 
         this._config = new VaultConfig(
