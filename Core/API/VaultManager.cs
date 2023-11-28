@@ -133,14 +133,12 @@ class VaultManager
     /// <summary>
     /// Add a repository to the vault.
     /// </summary>
+    ///
     /// <param name="repo">The repository to add.</param>
     public void AddRepository(ResticRepoConfig repo)
     {
         if (this._config == null)
             throw new VaultNotLoadedException("The vault has not been loaded yet.");
-
-        if (String.IsNullOrEmpty(repo.repo_name))
-            throw new ArgumentException("The repository name cannot be empty.");
 
         if (repo.backup_filepaths.Count == 0)
             throw new ArgumentException("There should be at least one filepath to back up.");
