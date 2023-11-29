@@ -6,7 +6,12 @@ class VaultManager
     public const uint VAULT_PASSWORD_LENGTH = 16; // Default vault password length
 
     // Default data directory
-    public string data_dir { get; } = Path.Combine(System.Environment.CurrentDirectory, "vault");
+    public string data_dir { get; } =
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "RestEasy",
+            "vault"
+        );
     private string? restic_bin = null;
     private VaultConfig? _config = null; // Will only be assigned a value when the vault is loaded.
 
