@@ -58,40 +58,55 @@ public class BackupCommand
 
         try
         {
-            int failed_backups = 0;
-            var vault = new VaultManager(data_dir, restic_bin);
-            vault.LoadVault();
+            var backup_statistics = AnsiConsole
+                .Progress()
+                .Start(ctx =>
+                {
+                    var task = ctx.AddTask(
+                        "Performing backup operation...",
+                        maxValue: targets.Count
+                    );
+                    var vault = new VaultManager(data_dir, restic_bin);
+                    int failed = 0;
+                    int successful = 0;
+                    vault.LoadVault();
 
-            foreach (var target in targets)
-            {
-                try
-                {
-                    AnsiConsole.Write(new Markup(CLI.Note($"Backing up `{target}`...\n")));
-                    vault.BackupRepository(target);
-                }
-                catch (Exception e) when (e is RepositoryNotFoundException || e is ResticException)
-                {
-                    AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
-                    failed_backups++;
-                }
-                catch (Exception e)
-                {
-                    AnsiConsole.WriteException(e);
-                    failed_backups++;
-                }
-            }
+                    foreach (var target in targets)
+                    {
+                        try
+                        {
+                            AnsiConsole.Write(new Markup(CLI.Note($"Backing up `{target}`...\n")));
+                            vault.BackupRepository(target);
+                            successful++;
+                        }
+                        catch (Exception e)
+                            when (e is RepositoryNotFoundException || e is ResticException)
+                        {
+                            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+                            failed++;
+                        }
+                        catch (Exception e)
+                        {
+                            AnsiConsole.WriteException(e);
+                            failed++;
+                        }
 
-            if (failed_backups > 0)
-            {
-                AnsiConsole.Write(
-                    new Markup(
-                        CLI.Error($"{failed_backups} out of {targets.Count} backups failed.\n")
-                    )
-                );
-            }
+                        task.Increment(1);
+                    }
+
+                    return (successful, failed);
+                });
+
+            AnsiConsole.Write(
+                new BreakdownChart()
+                    // occupy 50% of the console window
+                    .Width((int)(Console.WindowWidth * 0.50))
+                    .AddItem("Successful Backups", backup_statistics.successful, Color.Green)
+                    .AddItem("Failed Backups", backup_statistics.failed, Color.Red)
+            );
 
             Console.WriteLine("\nDone.");
-            return failed_backups;
+            return backup_statistics.failed;
         }
         catch (Exception e) when (e is InvalidVaultException || e is ArgumentException)
         {
