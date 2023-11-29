@@ -54,9 +54,15 @@ public class ListCommand
             else
             {
                 var table = new Table();
-                table.AddColumn("Vault Repositories");
+                table.AddColumn("Repository");
+                table.AddColumn("Backup Filepaths");
+                table.AddColumn("Maximum Snapshots");
                 foreach (var repo in vault.config.restic_repos)
-                    table.AddRow(new Text(repo.repo_name));
+                    table.AddRow(
+                        new Text(repo.repo_name),
+                        new Text(repo.backup_filepaths.Count.ToString()),
+                        new Text(repo.max_snapshots.ToString())
+                    );
 
                 AnsiConsole.Write(table);
             }
