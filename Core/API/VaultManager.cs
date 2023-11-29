@@ -9,7 +9,7 @@ class VaultManager
     public string data_dir { get; } =
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "RestEasy",
+            "resteasy",
             "vault"
         );
     private string? restic_bin = null;
