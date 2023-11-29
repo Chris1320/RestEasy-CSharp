@@ -29,7 +29,7 @@ public class ResticManager
         var start_info = new System.Diagnostics.ProcessStartInfo()
         {
             FileName = this.restic_path,
-            Arguments = $"--json --repo \"{repo_path}\" {command}",
+            Arguments = $"--json --repo \"{this.repo_path}\" {command}",
             CreateNoWindow = true,
             UseShellExecute = false,
             RedirectStandardInput = true,
@@ -67,6 +67,24 @@ public class ResticManager
     {
         var result = this.Run("init");
 
+        if (result.exit_code != 0)
+            throw new ResticException(result.error);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Backup a list of files and/or directories.
+    /// </summary>
+    ///
+    /// <param name="backup_filepaths">The list of files and/or directories to back up.</param>
+    ///
+    /// <returns>The result of the command.</returns>
+    public ProcessResult Backup(List<string> backup_filepaths)
+    {
+        var result = this.Run(
+            $"backup {string.Join(" ", backup_filepaths.Select(filepath => $"\"{filepath}\""))}"
+        );
         if (result.exit_code != 0)
             throw new ResticException(result.error);
 

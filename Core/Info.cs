@@ -16,7 +16,7 @@ class Info
         { "remove", $"Remove an existing repository from an existing {Info.Name} vault." },
         { "list", $"List restic repositories in a {Info.Name} vault." },
         { "info", $"Show information about a {Info.Name} vault or a specific restic repository." },
-        { "backup", $"Perform a backup of a single, a group of, or all restic repositories." },
+        { "backup", "Perform a backup of a single, a group of, or all restic repositories." },
     };
     public static Dictionary<string, string> InitOptions = new Dictionary<string, string>()
     {
@@ -37,5 +37,11 @@ class Info
     {
         { "-h, --help", "Show help information." },
         { "-v, --vault", "Specify the vault directory." },
+    };
+    public static Dictionary<string, string> BackupOptions = new Dictionary<string, string>()
+    {
+        { "-h, --help", "Show help information." },
+        { "-v, --vault", "Specify the vault directory." },
+        { "-b, --binary", "Specify the path to the restic binary." },
     };
 }

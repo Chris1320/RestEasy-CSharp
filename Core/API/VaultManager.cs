@@ -137,7 +137,9 @@ class VaultManager
     /// </summary>
     ///
     /// <param name="repo">The repository to add.</param>
-    public void AddRepository(ResticRepoConfig repo)
+    ///
+    /// <returns>The result of the restic command.</returns>
+    public ProcessResult AddRepository(ResticRepoConfig repo)
     {
         if (this._config == null)
             throw new VaultNotLoadedException("The vault has not been loaded yet.");
@@ -157,7 +159,7 @@ class VaultManager
                 throw new ArgumentException($"The repository `{repo.repo_name}` already exists.");
         }
 
-        new ResticManager(
+        var result = new ResticManager(
             Path.Combine(this.repos_dir, repo.repo_name),
             this._config.vault_password,
             this.restic_bin
@@ -165,5 +167,26 @@ class VaultManager
 
         this._config.restic_repos.Add(repo);
         this.SaveVault();
+        return result;
+    }
+
+    /// <summary>
+    /// Perform a backup of a repository.
+    /// </summary>
+    ///
+    /// <param name="repo_name">The name of the repository to back up.</param>
+    ///
+    /// <returns>The result of the restic command.</returns>
+    public ProcessResult BackupRepository(string repo_name)
+    {
+        foreach (var existing_repo in this.config.restic_repos)
+            if (existing_repo.repo_name == repo_name)
+                return new ResticManager(
+                    Path.Combine(this.repos_dir, repo_name),
+                    this.config.vault_password,
+                    this.restic_bin
+                ).Backup(existing_repo.backup_filepaths);
+
+        throw new RepositoryNotFoundException($"The repository `{repo_name}` does not exist.");
     }
 }

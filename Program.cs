@@ -40,9 +40,7 @@ namespace RestEasy
                     return 2;
 
                 case "backup":
-                    // TODO: Implement backup command.
-                    AnsiConsole.Write(new Markup(CLI.Error("Not implemented yet.\n")));
-                    return 2;
+                    return new BackupCommand().Main(args[1..]);
 
                 default:
                     AnsiConsole.Write(new Markup(CLI.Warn($"Unknown command `{args[0]}`.\n")));
