@@ -77,7 +77,7 @@ public class AddCommand
         if (!Validator.ValidateVaultName(repo_name))
         {
             AnsiConsole.Write(
-                new Markup(CLI.Error($"The repository name `{repo_name}` is invalid."))
+                new Markup(CLI.Error($"The repository name `{repo_name}` is invalid.\n"))
             );
             return 1;
         }
