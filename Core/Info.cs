@@ -31,6 +31,7 @@ class Info
         { "-v, --vault", "Specify the vault directory." },
         { "-n, --name", "Specify the name of the repository." },
         { "-s, --snapshots", "Specify how many snapshots to keep in this repository." },
+        { "-b, --binary", "Specify the path to the restic binary." },
     };
     public static Dictionary<string, string> ListOptions = new Dictionary<string, string>()
     {

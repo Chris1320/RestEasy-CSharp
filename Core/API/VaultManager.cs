@@ -7,6 +7,7 @@ class VaultManager
 
     // Default data directory
     public string data_dir { get; } = Path.Combine(System.Environment.CurrentDirectory, "vault");
+    private string? restic_bin = null;
     private VaultConfig? _config = null; // Will only be assigned a value when the vault is loaded.
 
     public string vault_name
@@ -33,8 +34,9 @@ class VaultManager
     }
 
     /// <param name="data_dir">The path to the data directory.</param>
-    public VaultManager(string data_dir = "")
+    public VaultManager(string data_dir = "", string? restic_bin = null)
     {
+        this.restic_bin = restic_bin;
         if (!String.IsNullOrEmpty(data_dir))
             this.data_dir = Path.IsPathRooted(data_dir)
                 ? data_dir
@@ -157,7 +159,8 @@ class VaultManager
 
         new ResticManager(
             Path.Combine(this.repos_dir, repo.repo_name),
-            this._config.vault_password
+            this._config.vault_password,
+            this.restic_bin
         ).Init();
 
         this._config.restic_repos.Add(repo);

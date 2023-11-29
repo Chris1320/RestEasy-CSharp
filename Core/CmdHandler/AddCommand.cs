@@ -10,7 +10,8 @@ public class AddCommand
         string repo_name = String.Empty;
         var backup_filepaths = new List<string>();
 
-        string? data_dir = null;
+        string data_dir = String.Empty;
+        string? restic_bin = null;
         uint? max_snapshots = null;
 
         for (int i = 0; i < args.Length; i++)
@@ -43,6 +44,11 @@ public class AddCommand
                         max_snapshots = uint.Parse(args[++i]);
                         continue;
 
+                    case "-b":
+                    case "--binary":
+                        restic_bin = args[++i];
+                        continue;
+
                     default:
                         backup_filepaths.Add(args[i]);
                         continue;
@@ -69,7 +75,7 @@ public class AddCommand
             : repo_name;
 
         // Add the repository to the vault.
-        var vault = data_dir is null ? new VaultManager() : new VaultManager(data_dir);
+        var vault = new VaultManager(data_dir, restic_bin);
         try
         {
             vault.LoadVault();

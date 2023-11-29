@@ -10,11 +10,11 @@ public class ResticManager
     /// <param name="repo_path">The path to the repository.</param>
     /// <param name="repo_password">The password for the repository.</param>
     /// <param name="restic_path">The path to the restic binary.</param>
-    public ResticManager(string repo_path, string repo_password, string restic_path = "restic")
+    public ResticManager(string repo_path, string repo_password, string? restic_path = null)
     {
         this.repo_path = repo_path;
         this.repo_password = repo_password;
-        this.restic_path = restic_path;
+        this.restic_path = restic_path ?? "restic";
     }
 
     /// <summary>
