@@ -14,14 +14,17 @@ public class ResticManager
     {
         this.repo_path = repo_path;
         this.repo_password = repo_password;
-        this.restic_path = restic_path ?? "restic";
+        this.restic_path = restic_path ?? "restic"; // WARN: Sanitize this
     }
 
     /// <summary>
     /// Run a restic command in a repository.
     /// </summary>
     ///
-    /// <param name="command">The restic command to run, with its arguments if necessary.</param>
+    /// <param name="command">
+    /// The restic command to run, with its arguments if necessary.
+    /// WARNING: this is not sanitized.
+    /// </param>
     ///
     /// <returns>The result of the command.</returns>
     private ProcessResult Run(string command)

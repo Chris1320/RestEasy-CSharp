@@ -74,6 +74,14 @@ public class AddCommand
             ? Path.GetFileName(backup_filepaths[0])
             : repo_name;
 
+        if (!Validator.ValidateVaultName(repo_name))
+        {
+            AnsiConsole.Write(
+                new Markup(CLI.Error($"The repository name `{repo_name}` is invalid."))
+            );
+            return 1;
+        }
+
         // Add the repository to the vault.
         var vault = new VaultManager(data_dir, restic_bin);
         try
