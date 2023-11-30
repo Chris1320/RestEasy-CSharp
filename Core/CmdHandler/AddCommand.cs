@@ -94,6 +94,7 @@ public class AddCommand
                     max_snapshots ?? vault.config.default_max_snapshots
                 )
             );
+
             AnsiConsole.Write(
                 new Markup(CLI.Note($"Repository `{repo_name}` added successfully.\n"))
             );

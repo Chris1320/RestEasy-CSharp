@@ -184,6 +184,9 @@ class VaultManager
     /// <returns>The result of the restic command.</returns>
     public ProcessResult BackupRepository(string repo_name)
     {
+        if (this._config == null)
+            throw new VaultNotLoadedException("The vault has not been loaded yet.");
+
         foreach (var existing_repo in this.config.restic_repos)
             if (existing_repo.repo_name == repo_name)
                 return new ResticManager(
