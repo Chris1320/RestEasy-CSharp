@@ -88,8 +88,8 @@ public class AddCommand
         {
             vault.LoadVault();
             vault.AddRepository(
+                repo_name,
                 new ResticRepoConfig(
-                    repo_name,
                     backup_filepaths,
                     max_snapshots ?? vault.config.default_max_snapshots
                 )

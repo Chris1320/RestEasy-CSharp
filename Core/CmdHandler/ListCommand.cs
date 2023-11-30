@@ -59,9 +59,9 @@ public class ListCommand
                 table.AddColumn("Maximum Snapshots");
                 foreach (var repo in vault.config.restic_repos)
                     table.AddRow(
-                        new Text(repo.repo_name),
-                        new Text(repo.backup_filepaths.Count.ToString()),
-                        new Text(repo.max_snapshots.ToString())
+                        new Text(repo.Key),
+                        new Text(repo.Value.backup_filepaths.Count.ToString()),
+                        new Text(repo.Value.max_snapshots.ToString())
                     );
 
                 AnsiConsole.Write(table);
