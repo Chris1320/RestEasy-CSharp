@@ -141,7 +141,8 @@ class VaultManager
     /// Add a repository to the vault.
     /// </summary>
     ///
-    /// <param name="repo_config">The repository to add.</param>
+    /// <param name="repo_name">The name of the repository to add.</param>
+    /// <param name="repo_config">The configuration of the repository to add.</param>
     ///
     /// <returns>The result of the restic command.</returns>
     public ProcessResult AddRepository(string repo_name, ResticRepoConfig repo_config)
