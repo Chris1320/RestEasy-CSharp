@@ -1,74 +1,44 @@
+using System.ComponentModel;
 using RestEasy.API;
-using RestEasy.Core;
 using RestEasy.Exceptions;
 using RestEasy.Helpers;
 using RestEasy.Models;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `add` command.
 /// </summary>
-public class AddCommand
+public class AddCommand : Command<AddCommand.Settings>
 {
-    public int Main(string[] args)
+    public class Settings : CommandSettings
     {
-        string repo_name = String.Empty;
-        var backup_filepaths = new List<string>();
+        [Description("The filepaths to backup.")]
+        [CommandArgument(0, "<filepaths>")]
+        public string[] backup_filepaths { get; init; } = Array.Empty<string>();
 
-        string data_dir = String.Empty;
-        string? restic_bin = null;
-        uint? max_snapshots = null;
+        [Description("Specify the vault directory.")]
+        [CommandOption("-v|--vault")]
+        public string data_dir { get; init; } = String.Empty;
 
-        for (int i = 0; i < args.Length; i++)
-        {
-            try
-            {
-                switch (args[i])
-                {
-                    case "-h":
-                    case "--help":
-                        HelpMenu.GenerateHelpMenu(
-                            "add <filepaths> [options]",
-                            Info.AddOptions,
-                            $"Add a new restic repository within an existing {Info.Name} vault."
-                        );
-                        return 0;
+        [Description("Specify the name of the repository.")]
+        [CommandOption("-n|--name")]
+        public string? repo_name { get; set; }
 
-                    case "-v":
-                    case "--vault":
-                        data_dir = args[++i];
-                        continue;
+        [Description("Specify how many snapshots to keep in this repository.")]
+        [CommandOption("-s|--snapshots")]
+        public uint? max_snapshots { get; set; }
 
-                    case "-n":
-                    case "--name":
-                        repo_name = args[++i];
-                        continue;
+        [Description("Specify the path to the restic binary.")]
+        [CommandOption("-b|--binary")]
+        public string? restic_bin { get; init; }
+    }
 
-                    case "-s":
-                    case "--snapshots":
-                        max_snapshots = uint.Parse(args[++i]);
-                        continue;
-
-                    case "-b":
-                    case "--binary":
-                        restic_bin = args[++i];
-                        continue;
-
-                    default:
-                        backup_filepaths.Add(args[i]);
-                        continue;
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
-                return 1;
-            }
-        }
-
-        if (backup_filepaths.Count == 0)
+    public override int Execute(CommandContext context, Settings settings)
+    {
+        if (settings.backup_filepaths.Length == 0)
         {
             AnsiConsole.Write(
                 new Markup(CLIHelper.Error("There should be at least one filepath to back up.\n"))
@@ -77,33 +47,37 @@ public class AddCommand
         }
 
         // Infer repository name from the first backup filepath.
-        repo_name = String.IsNullOrEmpty(repo_name)
-            ? Path.GetFileName(backup_filepaths[0])
-            : repo_name;
+        settings.repo_name = String.IsNullOrEmpty(settings.repo_name)
+            ? Path.GetFileName(settings.backup_filepaths[0])
+            : settings.repo_name;
 
-        if (!Validator.ValidateVaultName(repo_name))
+        if (!Validator.ValidateVaultName(settings.repo_name))
         {
             AnsiConsole.Write(
-                new Markup(CLIHelper.Error($"The repository name `{repo_name}` is invalid.\n"))
+                new Markup(
+                    CLIHelper.Error($"The repository name `{settings.repo_name}` is invalid.\n")
+                )
             );
             return 1;
         }
 
         // Add the repository to the vault.
-        var vault = new VaultManager(data_dir, restic_bin);
+        var vault = new VaultManager(settings.data_dir, settings.restic_bin);
         try
         {
             vault.LoadVault();
             vault.AddRepository(
-                repo_name,
+                settings.repo_name,
                 new ResticRepoConfig(
-                    backup_filepaths,
-                    max_snapshots ?? vault.config.default_max_snapshots
+                    new List<string>(settings.backup_filepaths),
+                    settings.max_snapshots ?? vault.config.default_max_snapshots
                 )
             );
 
             AnsiConsole.Write(
-                new Markup(CLIHelper.Note($"Repository `{repo_name}` added successfully.\n"))
+                new Markup(
+                    CLIHelper.Note($"Repository `{settings.repo_name}` added successfully.\n")
+                )
             );
             return 0;
         }

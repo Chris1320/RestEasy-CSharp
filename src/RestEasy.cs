@@ -1,7 +1,6 @@
 ﻿using RestEasy.CmdHandler;
 using RestEasy.Core;
-using RestEasy.Helpers;
-using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace RestEasy;
 
@@ -9,46 +8,48 @@ class RestEasy
 {
     public static int Main(string[] args)
     {
-        AnsiConsole.Write(new Markup($"{Info.Title}\n\n"));
-        if (args.Length == 0)
+        var cmd_handler = new CommandApp();
+        cmd_handler.Configure(config =>
         {
-            AnsiConsole.Write(new Markup(CLIHelper.Warn(String.Format("No arguments provided\n"))));
-            HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
-            return 0;
-        }
+            config.SetApplicationName(Info.Name);
+            config.SetApplicationVersion(string.Join(".", Info.Version));
 
-        switch (args[0])
-        {
-            case "help":
-                HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
-                return 0;
+            config
+                .AddCommand<InitCommand>("init")
+                .WithDescription($"Initialize a new {Info.Name} vault.")
+                .WithExample(
+                    new string[] { "init", "--vault", "~/backups/desktop1/resteasy/vault" }
+                );
+            config
+                .AddCommand<AddCommand>("add")
+                .WithDescription(
+                    $"Add a new restic repository within an existing {Info.Name} vault."
+                )
+                .WithExample(
+                    new string[] { "add", "--name", "test-repo", "foo.txt", "bar.png", "baz/" }
+                );
+            config
+                .AddCommand<ListCommand>("list")
+                .WithDescription($"List restic repositories in a {Info.Name} vault.")
+                .WithExample(
+                    new string[] { "list", "--vault", "~/backups/desktop1/resteasy/vault" }
+                );
+            config
+                .AddCommand<InfoCommand>("info")
+                .WithDescription("Get information about a restic repository.")
+                .WithExample(new string[] { "info", "repo-A" });
+            config
+                .AddCommand<BackupCommand>("backup")
+                .WithDescription(
+                    "Perform a backup of a single, a group of, or all restic repositories."
+                )
+                .WithExample(new string[] { "backup", "repo-A", "repo-B", "repo-C" });
+            config
+                .AddCommand<RemoveCommand>("remove")
+                .WithDescription("Remove one or more restic repositories.")
+                .WithExample(new string[] { "remove", "repo-A", "repo-B", "group-A" });
+        });
 
-            case "init":
-                return new InitCommand().Main(args[1..]);
-
-            case "add":
-                return new AddCommand().Main(args[1..]);
-
-            case "remove":
-                // TODO: Implement remove command.
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Not implemented yet.\n")));
-                return 2;
-
-            case "list":
-                return new ListCommand().Main(args[1..]);
-
-            case "info":
-                // TODO: Implement info command.
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Not implemented yet.\n")));
-                return 2;
-
-            case "backup":
-                return new BackupCommand().Main(args[1..]);
-
-            default:
-                AnsiConsole.Write(new Markup(CLIHelper.Warn($"Unknown command `{args[0]}`.\n")));
-                HelpMenu.GenerateHelpMenu("<command> [options]", Info.Commands);
-                return 1;
-        }
+        return cmd_handler.Run(args);
     }
 }

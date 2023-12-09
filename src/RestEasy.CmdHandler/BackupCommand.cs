@@ -1,60 +1,35 @@
+using System.ComponentModel;
 using RestEasy.API;
-using RestEasy.Core;
 using RestEasy.Exceptions;
 using RestEasy.Helpers;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `backup` command.
 /// </summary>
-public class BackupCommand
+public class BackupCommand : Command<BackupCommand.Settings>
 {
-    public int Main(string[] args)
+    public class Settings : CommandSettings
     {
-        var targets = new List<string>();
-        string data_dir = String.Empty;
-        string? restic_bin = null;
+        [Description("The repositories to back up.")]
+        [CommandArgument(0, "<target>")]
+        public string[] targets { get; init; } = Array.Empty<string>();
 
-        for (int i = 0; i < args.Length; i++)
-        {
-            try
-            {
-                switch (args[i])
-                {
-                    case "-h":
-                    case "--help":
-                        HelpMenu.GenerateHelpMenu(
-                            "backup <target> [options]",
-                            Info.BackupOptions,
-                            "Perform a backup of a single, a group of, or all restic repositories."
-                        );
-                        return 0;
+        [Description("Specify the vault directory.")]
+        [CommandOption("-v|--vault")]
+        public string data_dir { get; init; } = String.Empty;
 
-                    case "-v":
-                    case "--vault":
-                        data_dir = args[++i];
-                        continue;
+        [Description("Specify the path to the restic binary.")]
+        [CommandOption("-b|--binary")]
+        public string? restic_bin { get; init; }
+    }
 
-                    case "-b":
-                    case "--binary":
-                        restic_bin = args[++i];
-                        continue;
-
-                    default:
-                        targets.Add(args[i]);
-                        continue;
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
-                return 1;
-            }
-        }
-
-        if (targets.Count == 0)
+    public override int Execute(CommandContext context, Settings settings)
+    {
+        if (settings.targets.Length == 0)
         {
             AnsiConsole.Write(
                 new Markup(CLIHelper.Error("There should be at least one target to back up.\n"))
@@ -70,14 +45,14 @@ public class BackupCommand
                 {
                     var task = ctx.AddTask(
                         "Performing backup operation...",
-                        maxValue: targets.Count
+                        maxValue: settings.targets.Length
                     );
-                    var vault = new VaultManager(data_dir, restic_bin);
+                    var vault = new VaultManager(settings.data_dir, settings.restic_bin);
                     int failed = 0;
                     int successful = 0;
                     vault.LoadVault();
 
-                    foreach (var target in targets)
+                    foreach (var target in settings.targets)
                     {
                         try
                         {

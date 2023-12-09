@@ -11,7 +11,7 @@ public class Validator
     /// <returns>True if the vault name is valid, false otherwise.</returns>
     public static bool ValidateVaultName(string vaultname)
     {
-        string allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
+        string allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.";
         return !String.IsNullOrWhiteSpace(vaultname)
             && vaultname.All(c => allowed_chars.Contains(c));
     }

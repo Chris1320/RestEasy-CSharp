@@ -1,56 +1,31 @@
+using System.ComponentModel;
 using RestEasy.API;
-using RestEasy.Core;
 using RestEasy.Exceptions;
 using RestEasy.Helpers;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `list` command.
 /// </summary>
-public class ListCommand
+public class ListCommand : Command<ListCommand.Settings>
 {
-    public int Main(string[] args)
+    public class Settings : CommandSettings
     {
-        string? data_dir = null;
-        for (int i = 0; i < args.Length; i++)
-        {
-            try
-            {
-                switch (args[i])
-                {
-                    case "-h":
-                    case "--help":
-                        HelpMenu.GenerateHelpMenu(
-                            "list [options]",
-                            Info.ListOptions,
-                            $"List restic repositories in a {Info.Name} vault."
-                        );
-                        return 0;
+        [Description("Specify the vault directory.")]
+        [CommandOption("-v|--vault")]
+        public string? data_dir { get; init; }
+    }
 
-                    case "-v":
-                    case "--vault":
-                        data_dir = args[++i];
-                        continue;
-
-                    default:
-                        AnsiConsole.Write(
-                            new Markup(CLIHelper.Error($"Unknown option: {args[i]}\n"))
-                        );
-                        return 1;
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
-                return 1;
-            }
-        }
-
+    public override int Execute(CommandContext context, Settings settings)
+    {
         try
         {
-            var vault = data_dir is null ? new VaultManager() : new VaultManager(data_dir);
+            var vault = settings.data_dir is null
+                ? new VaultManager()
+                : new VaultManager(settings.data_dir);
             vault.LoadVault();
 
             if (vault.config.restic_repos.Count == 0)

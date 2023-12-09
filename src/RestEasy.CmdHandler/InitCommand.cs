@@ -1,84 +1,40 @@
+using System.ComponentModel;
 using RestEasy.API;
-using RestEasy.Core;
 using RestEasy.Exceptions;
 using RestEasy.Helpers;
 using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `init` command.
 /// </summary>
-class InitCommand
+class InitCommand : Command<InitCommand.Settings>
 {
-    public int Main(string[] args)
+    public class Settings : CommandSettings
     {
-        uint? max_snapshots = null;
-        string? data_dir = null;
-        string vault_password = String.Empty;
-        for (int i = 0; i < args.Length; i++)
-        {
-            try
-            {
-                switch (args[i])
-                {
-                    case "-h":
-                    case "--help":
-                        HelpMenu.GenerateHelpMenu(
-                            "init [options]",
-                            Info.InitOptions,
-                            "Initialize a new RestEasy vault."
-                        );
-                        return 0;
+        [Description("Specify how many snapshots to keep by default.")]
+        [CommandOption("-s|--snapshots")]
+        public uint? max_snapshots { get; set; }
 
-                    case "-v":
-                    case "--vault":
-                        data_dir = args[++i];
-                        continue;
+        [Description("Specify the vault directory.")]
+        [CommandOption("-v|--vault")]
+        public string? data_dir { get; init; }
 
-                    case "-p":
-                    case "--password":
-                        vault_password = args[++i];
-                        continue;
+        [Description("Specify the password for the repositories in the vault.")]
+        [CommandOption("-p|--password")]
+        public string vault_password { get; set; } = String.Empty;
+    }
 
-                    case "-s":
-                    case "--snapshots":
-                        try
-                        {
-                            max_snapshots = uint.Parse(args[++i]);
-                            continue;
-                        }
-                        catch (OverflowException)
-                        {
-                            AnsiConsole.Write(
-                                new Markup(
-                                    CLIHelper.Error(
-                                        $"The number of snapshots must be between {uint.MinValue} and {uint.MaxValue}.\n"
-                                    )
-                                )
-                            );
-                            return 1;
-                        }
-
-                    default:
-                        AnsiConsole.Write(
-                            new Markup(CLIHelper.Error($"Unknown option: {args[i]}\n"))
-                        );
-                        return 1;
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
-                return 1;
-            }
-        }
-
-        VaultManager vault = data_dir == null ? new VaultManager() : new VaultManager(data_dir);
+    public override int Execute(CommandContext context, Settings settings)
+    {
+        VaultManager vault =
+            settings.data_dir == null ? new VaultManager() : new VaultManager(settings.data_dir);
 
         try
         {
-            vault.CreateVault(vault_password, max_snapshots);
+            vault.CreateVault(settings.vault_password, settings.max_snapshots);
         }
         catch (VaultAlreadyExists e)
         {
