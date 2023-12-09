@@ -1,13 +1,13 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-public class InfoCommand : Command<InfoCommand.Settings>
+public class RestoreCommand : Command<RestoreCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [Description("The repository to show information about.")]
-        [CommandArgument(0, "<repo_name>")]
-        public string repo_name { get; init; } = String.Empty;
+        [Description("The repositories to restore.")]
+        [CommandArgument(0, "<repositories>")]
+        public string[] repositories { get; init; } = Array.Empty<string>();
     }
 
     public override int Execute(CommandContext context, Settings settings)

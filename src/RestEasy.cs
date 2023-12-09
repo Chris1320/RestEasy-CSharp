@@ -45,6 +45,12 @@ class RestEasy
                 )
                 .WithExample(new string[] { "backup", "repo-A", "repo-B", "repo-C" });
             config
+                .AddCommand<RestoreCommand>("restore")
+                .WithDescription(
+                    "Restore a backup of a single, a group of, or all restic repositories."
+                )
+                .WithExample(new string[] { "restore", "repo-A", "repo-B", "repo-C" });
+            config
                 .AddCommand<RemoveCommand>("remove")
                 .WithDescription("Remove one or more restic repositories.")
                 .WithExample(new string[] { "remove", "repo-A", "repo-B", "group-A" });

@@ -12,7 +12,7 @@ public class RemoveCommand : Command<RemoveCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
-        Console.WriteLine($"Removing {settings.repositories.Length} repositories");
-        return 0;
+        // TODO: Continue this implementation.
+        throw new NotImplementedException();
     }
 }
