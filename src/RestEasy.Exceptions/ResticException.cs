@@ -1,3 +1,5 @@
+namespace RestEasy.Exceptions;
+
 public class ResticException : Exception
 {
     public ResticException() { }

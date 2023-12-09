@@ -1,3 +1,5 @@
+namespace RestEasy.Exceptions;
+
 public class InvalidVaultException : Exception
 {
     public InvalidVaultException() { }

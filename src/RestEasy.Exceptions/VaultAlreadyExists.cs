@@ -1,3 +1,5 @@
+namespace RestEasy.Exceptions;
+
 public class VaultAlreadyExists : Exception
 {
     public VaultAlreadyExists() { }

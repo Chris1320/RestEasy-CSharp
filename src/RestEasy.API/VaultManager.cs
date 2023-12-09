@@ -1,4 +1,9 @@
 using System.Text.Json;
+using RestEasy.Exceptions;
+using RestEasy.Helpers;
+using RestEasy.Models;
+
+namespace RestEasy.API;
 
 class VaultManager
 {

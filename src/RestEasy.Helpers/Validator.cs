@@ -1,3 +1,5 @@
+namespace RestEasy.Helpers;
+
 public class Validator
 {
     /// <summary>

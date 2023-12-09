@@ -1,4 +1,7 @@
+using RestEasy.Helpers;
 using Spectre.Console;
+
+namespace RestEasy.Core;
 
 public class HelpMenu
 {
@@ -19,11 +22,11 @@ public class HelpMenu
     )
     {
         if (!string.IsNullOrEmpty(description))
-            AnsiConsole.Write(new Markup(CLI.Help($"{description}\n")));
+            AnsiConsole.Write(new Markup(CLIHelper.Help($"{description}\n")));
 
         AnsiConsole.Write(
             new Markup(
-                CLI.Help(
+                CLIHelper.Help(
                     String.Format(
                         "[dim italic]Usage:[/] [underline]{0} {1}[/]\n\n",
                         Info.FileName.EscapeMarkup(),

@@ -1,3 +1,8 @@
+using RestEasy.Exceptions;
+using RestEasy.Models;
+
+namespace RestEasy.API;
+
 /// <summary>
 /// The class that is responsible for performing all the operations with the restic binary.
 /// </summary>

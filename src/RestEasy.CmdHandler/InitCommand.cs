@@ -1,4 +1,10 @@
+using RestEasy.API;
+using RestEasy.Core;
+using RestEasy.Exceptions;
+using RestEasy.Helpers;
 using Spectre.Console;
+
+namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `init` command.
@@ -46,7 +52,7 @@ class InitCommand
                         {
                             AnsiConsole.Write(
                                 new Markup(
-                                    CLI.Error(
+                                    CLIHelper.Error(
                                         $"The number of snapshots must be between {uint.MinValue} and {uint.MaxValue}.\n"
                                     )
                                 )
@@ -55,13 +61,15 @@ class InitCommand
                         }
 
                     default:
-                        AnsiConsole.Write(new Markup(CLI.Error($"Unknown option: {args[i]}\n")));
+                        AnsiConsole.Write(
+                            new Markup(CLIHelper.Error($"Unknown option: {args[i]}\n"))
+                        );
                         return 1;
                 }
             }
             catch (IndexOutOfRangeException)
             {
-                AnsiConsole.Write(new Markup(CLI.Error("Missing argument.\n")));
+                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
                 return 1;
             }
         }
@@ -74,7 +82,7 @@ class InitCommand
         }
         catch (VaultAlreadyExists e)
         {
-            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            AnsiConsole.Write(new Markup(CLIHelper.Error($"{e.Message}\n")));
             return 1;
         }
         catch (Exception e)
@@ -83,7 +91,9 @@ class InitCommand
             return 1;
         }
         AnsiConsole.Write(
-            new Markup(CLI.Note($"The vault was created successfully in `{vault.data_dir}`.\n"))
+            new Markup(
+                CLIHelper.Note($"The vault was created successfully in `{vault.data_dir}`.\n")
+            )
         );
 
         return 0;

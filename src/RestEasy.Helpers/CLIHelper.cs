@@ -1,9 +1,11 @@
 using Spectre.Console;
 
+namespace RestEasy.Helpers;
+
 /// <summary>
 /// A helper class that contains methods for formatting CLI output.
 /// </summary>
-class CLI
+class CLIHelper
 {
     public static string Note(string str, bool escape_markup = true) =>
         $"[gray][[[/][green]i[/][gray]]][/] {(escape_markup ? str.EscapeMarkup() : str)}";

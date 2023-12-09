@@ -1,4 +1,10 @@
+using RestEasy.API;
+using RestEasy.Core;
+using RestEasy.Exceptions;
+using RestEasy.Helpers;
 using Spectre.Console;
+
+namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `list` command.
@@ -29,13 +35,15 @@ public class ListCommand
                         continue;
 
                     default:
-                        AnsiConsole.Write(new Markup(CLI.Error($"Unknown option: {args[i]}\n")));
+                        AnsiConsole.Write(
+                            new Markup(CLIHelper.Error($"Unknown option: {args[i]}\n"))
+                        );
                         return 1;
                 }
             }
             catch (IndexOutOfRangeException)
             {
-                AnsiConsole.Write(new Markup(CLI.Error("Missing argument.\n")));
+                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
                 return 1;
             }
         }
@@ -48,7 +56,7 @@ public class ListCommand
             if (vault.config.restic_repos.Count == 0)
             {
                 AnsiConsole.Write(
-                    new Markup(CLI.Note("There are no restic repositories in this vault.\n"))
+                    new Markup(CLIHelper.Note("There are no restic repositories in this vault.\n"))
                 );
             }
             else
@@ -70,7 +78,7 @@ public class ListCommand
         }
         catch (InvalidVaultException e)
         {
-            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            AnsiConsole.Write(new Markup(CLIHelper.Error($"{e.Message}\n")));
             return 1;
         }
         catch (Exception e)

@@ -1,5 +1,7 @@
 using System.Text;
 
+namespace RestEasy.Helpers;
+
 public class Randomizer
 {
     private Random random = new Random();

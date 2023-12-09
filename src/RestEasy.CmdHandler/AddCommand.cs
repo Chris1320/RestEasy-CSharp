@@ -1,4 +1,11 @@
+using RestEasy.API;
+using RestEasy.Core;
+using RestEasy.Exceptions;
+using RestEasy.Helpers;
+using RestEasy.Models;
 using Spectre.Console;
+
+namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `add` command.
@@ -56,7 +63,7 @@ public class AddCommand
             }
             catch (IndexOutOfRangeException)
             {
-                AnsiConsole.Write(new Markup(CLI.Error("Missing argument.\n")));
+                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
                 return 1;
             }
         }
@@ -64,7 +71,7 @@ public class AddCommand
         if (backup_filepaths.Count == 0)
         {
             AnsiConsole.Write(
-                new Markup(CLI.Error("There should be at least one filepath to back up.\n"))
+                new Markup(CLIHelper.Error("There should be at least one filepath to back up.\n"))
             );
             return 1;
         }
@@ -77,7 +84,7 @@ public class AddCommand
         if (!Validator.ValidateVaultName(repo_name))
         {
             AnsiConsole.Write(
-                new Markup(CLI.Error($"The repository name `{repo_name}` is invalid.\n"))
+                new Markup(CLIHelper.Error($"The repository name `{repo_name}` is invalid.\n"))
             );
             return 1;
         }
@@ -96,13 +103,13 @@ public class AddCommand
             );
 
             AnsiConsole.Write(
-                new Markup(CLI.Note($"Repository `{repo_name}` added successfully.\n"))
+                new Markup(CLIHelper.Note($"Repository `{repo_name}` added successfully.\n"))
             );
             return 0;
         }
         catch (Exception e) when (e is InvalidVaultException || e is ArgumentException)
         {
-            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            AnsiConsole.Write(new Markup(CLIHelper.Error($"{e.Message}\n")));
             return 1;
         }
         catch (Exception e)

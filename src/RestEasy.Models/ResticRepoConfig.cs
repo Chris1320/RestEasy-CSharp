@@ -1,3 +1,5 @@
+namespace RestEasy.Models;
+
 /// <summary>
 /// This record represents the configuration of a restic repository.
 /// </summary>

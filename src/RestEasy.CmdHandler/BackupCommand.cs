@@ -1,4 +1,10 @@
+using RestEasy.API;
+using RestEasy.Core;
+using RestEasy.Exceptions;
+using RestEasy.Helpers;
 using Spectre.Console;
+
+namespace RestEasy.CmdHandler;
 
 /// <summary>
 /// This class handles the `backup` command.
@@ -43,7 +49,7 @@ public class BackupCommand
             }
             catch (IndexOutOfRangeException)
             {
-                AnsiConsole.Write(new Markup(CLI.Error("Missing argument.\n")));
+                AnsiConsole.Write(new Markup(CLIHelper.Error("Missing argument.\n")));
                 return 1;
             }
         }
@@ -51,7 +57,7 @@ public class BackupCommand
         if (targets.Count == 0)
         {
             AnsiConsole.Write(
-                new Markup(CLI.Error("There should be at least one target to back up.\n"))
+                new Markup(CLIHelper.Error("There should be at least one target to back up.\n"))
             );
             return 1;
         }
@@ -75,14 +81,16 @@ public class BackupCommand
                     {
                         try
                         {
-                            AnsiConsole.Write(new Markup(CLI.Note($"Backing up `{target}`...\n")));
+                            AnsiConsole.Write(
+                                new Markup(CLIHelper.Note($"Backing up `{target}`...\n"))
+                            );
                             vault.BackupRepository(target);
                             successful++;
                         }
                         catch (Exception e)
                             when (e is RepositoryNotFoundException || e is ResticException)
                         {
-                            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+                            AnsiConsole.Write(new Markup(CLIHelper.Error($"{e.Message}\n")));
                             failed++;
                         }
                         catch (Exception e)
@@ -110,7 +118,7 @@ public class BackupCommand
         }
         catch (Exception e) when (e is InvalidVaultException || e is ArgumentException)
         {
-            AnsiConsole.Write(new Markup(CLI.Error($"{e.Message}\n")));
+            AnsiConsole.Write(new Markup(CLIHelper.Error($"{e.Message}\n")));
             return 1;
         }
         catch (Exception e)

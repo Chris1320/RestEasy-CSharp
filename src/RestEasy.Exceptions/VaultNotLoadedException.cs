@@ -1,3 +1,5 @@
+namespace RestEasy.Exceptions;
+
 public class VaultNotLoadedException : Exception
 {
     public VaultNotLoadedException() { }

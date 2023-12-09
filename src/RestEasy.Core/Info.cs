@@ -1,3 +1,5 @@
+namespace RestEasy.Core;
+
 class Info
 {
     public const string Name = "RestEasy";

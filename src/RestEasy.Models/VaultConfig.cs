@@ -1,3 +1,5 @@
+namespace RestEasy.Models;
+
 /// <summary>
 /// This record represents the vault configuration.
 /// </summary>
