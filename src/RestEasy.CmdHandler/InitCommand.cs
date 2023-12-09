@@ -16,7 +16,7 @@ class InitCommand : Command<InitCommand.Settings>
     {
         [Description("Specify how many snapshots to keep by default.")]
         [CommandOption("-s|--snapshots")]
-        public uint? max_snapshots { get; set; }
+        public uint? max_snapshots { get; init; }
 
         [Description("Specify the vault directory.")]
         [CommandOption("-v|--vault")]
@@ -24,7 +24,7 @@ class InitCommand : Command<InitCommand.Settings>
 
         [Description("Specify the password for the repositories in the vault.")]
         [CommandOption("-p|--password")]
-        public string vault_password { get; set; } = String.Empty;
+        public string vault_password { get; init; } = String.Empty;
     }
 
     public override int Execute(CommandContext context, Settings settings)

@@ -29,7 +29,7 @@ public class AddCommand : Command<AddCommand.Settings>
 
         [Description("Specify how many snapshots to keep in this repository.")]
         [CommandOption("-s|--snapshots")]
-        public uint? max_snapshots { get; set; }
+        public uint? max_snapshots { get; init; }
 
         [Description("Specify the path to the restic binary.")]
         [CommandOption("-b|--binary")]

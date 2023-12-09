@@ -7,7 +7,7 @@ public class InfoCommand : Command<InfoCommand.Settings>
     {
         [Description("The repository to show information about.")]
         [CommandArgument(0, "<repo_name>")]
-        public string repo_name { get; set; } = String.Empty;
+        public string repo_name { get; init; } = String.Empty;
     }
 
     public override int Execute(CommandContext context, Settings settings)
