@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using RestEasy.API;
+using RestEasy.Helpers;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -85,6 +86,14 @@ public class InfoCommand : Command<InfoCommand.Settings>
             AnsiConsole.Write(vault_info_panel);
             AnsiConsole.Write(repo_list_panel);
             return 0;
+        }
+
+        if (!vault.config.restic_repos.ContainsKey(settings.repo_name))
+        {
+            AnsiConsole.Write(
+                new Markup(CLIHelper.Error("The repository does not exist in this vault.\n"))
+            );
+            return 1;
         }
 
         var repo_info = new Grid();
