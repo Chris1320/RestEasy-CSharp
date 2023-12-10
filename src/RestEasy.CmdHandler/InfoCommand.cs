@@ -69,7 +69,13 @@ public class InfoCommand : Command<InfoCommand.Settings>
                 alignment: Justify.Center
             );
 
-            var repo_list = new Columns(vault.config.restic_repos.Keys).Padding(2, 0, 2, 0);
+            var repo_list = new Columns(
+                vault
+                    .config
+                    .restic_repos
+                    .Keys
+                    .Select(repo => new Text(repo, new Style(foreground: Color.Blue)))
+            ).Padding(2, 0, 2, 0);
             var repo_list_panel = new Panel(repo_list);
             repo_list_panel.Header = new PanelHeader(
                 $"[bold]Repositories in vault [green]{vault.vault_name}[/][/]",
@@ -81,7 +87,50 @@ public class InfoCommand : Command<InfoCommand.Settings>
             return 0;
         }
 
-        // TODO: Show info about the repo
+        var repo_info = new Grid();
+        repo_info.AddColumns(2);
+
+        repo_info
+            .AddRow(
+                new Text("Repository Location").RightJustified(),
+                new TextPath(Path.Combine(vault.repos_dir, settings.repo_name))
+                    .RootColor(Color.Default)
+                    .SeparatorColor(Color.Grey30)
+                    .StemColor(Color.Grey50)
+                    .LeafColor(Color.Yellow)
+            )
+            .AddRow(
+                new Text("Maximum Snapshots").RightJustified(),
+                new Text(vault.config.restic_repos[settings.repo_name].max_snapshots.ToString())
+            );
+        var repo_info_panel = new Panel(repo_info);
+        repo_info_panel.Header = new PanelHeader(
+            $"[bold]Information about repository [green]{settings.repo_name}[/] from vault [blue]{vault.vault_name}[/][/]",
+            alignment: Justify.Center
+        );
+
+        var bkfp_list = new Columns(
+            vault
+                .config
+                .restic_repos[settings.repo_name]
+                .backup_filepaths
+                .Select(
+                    fp =>
+                        new TextPath(fp)
+                            .RootColor(Color.Default)
+                            .SeparatorColor(Color.Grey30)
+                            .StemColor(Color.Blue)
+                            .LeafColor(Color.Yellow)
+                )
+        ).Padding(2, 0, 2, 0);
+        var bkfp_list_panel = new Panel(bkfp_list);
+        bkfp_list_panel.Header = new PanelHeader(
+            $"[bold]Backup filepaths in repository [green]{settings.repo_name}[/] from vault [blue]{vault.vault_name}[/][/]",
+            alignment: Justify.Center
+        );
+
+        AnsiConsole.Write(repo_info_panel);
+        AnsiConsole.Write(bkfp_list_panel);
         return 0;
     }
 }
