@@ -158,6 +158,9 @@ class VaultManager
         if (repo_config.backup_filepaths.Count == 0)
             throw new ArgumentException("There should be at least one filepath to back up.");
 
+        if (!Validator.ValidateVaultName(repo_name))
+            throw new ArgumentException($"The repository name `{repo_name}` is invalid.");
+
         foreach (var filepath in repo_config.backup_filepaths)
         {
             if (!File.Exists(filepath) && !Directory.Exists(filepath))

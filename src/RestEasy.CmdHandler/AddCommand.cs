@@ -38,6 +38,8 @@ public class AddCommand : Command<AddCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
+        // `AddRepository()` already checks for this, but we still
+        // need this because we might infer the repository name.
         if (settings.backup_filepaths.Length == 0)
         {
             AnsiConsole.Write(
@@ -50,16 +52,6 @@ public class AddCommand : Command<AddCommand.Settings>
         settings.repo_name = String.IsNullOrEmpty(settings.repo_name)
             ? Path.GetFileName(settings.backup_filepaths[0])
             : settings.repo_name;
-
-        if (!Validator.ValidateVaultName(settings.repo_name))
-        {
-            AnsiConsole.Write(
-                new Markup(
-                    CLIHelper.Error($"The repository name `{settings.repo_name}` is invalid.\n")
-                )
-            );
-            return 1;
-        }
 
         // Add the repository to the vault.
         var vault = new VaultManager(settings.data_dir, settings.restic_bin);
