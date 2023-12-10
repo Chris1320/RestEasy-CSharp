@@ -32,10 +32,11 @@ public class InfoCommand : Command<InfoCommand.Settings>
 
         if (String.IsNullOrWhiteSpace(settings.repo_name))
         {
-            var grid = new Grid();
-            grid.AddColumns(2);
+            var vault_info = new Grid();
+            vault_info.AddColumns(2);
 
-            grid.AddRow(
+            vault_info
+                .AddRow(
                     new Text("Vault Location").RightJustified(),
                     new TextPath(vault.data_dir)
                         .RootColor(Color.Default)
@@ -57,17 +58,26 @@ public class InfoCommand : Command<InfoCommand.Settings>
                 );
 
             if (settings.show_all)
-                grid.AddRow(
+                vault_info.AddRow(
                     new Text("Vault Password").RightJustified(),
                     new Text(vault.config.vault_password)
                 );
 
-            var panel = new Panel(grid);
-            panel.Header = new PanelHeader(
+            var vault_info_panel = new Panel(vault_info);
+            vault_info_panel.Header = new PanelHeader(
                 $"[bold]Information about vault [green]{vault.vault_name}[/][/]",
                 alignment: Justify.Center
             );
-            AnsiConsole.Write(panel);
+
+            var repo_list = new Columns(vault.config.restic_repos.Keys).Padding(2, 0, 2, 0);
+            var repo_list_panel = new Panel(repo_list);
+            repo_list_panel.Header = new PanelHeader(
+                $"[bold]Repositories in vault [green]{vault.vault_name}[/][/]",
+                alignment: Justify.Center
+            );
+
+            AnsiConsole.Write(vault_info_panel);
+            AnsiConsole.Write(repo_list_panel);
             return 0;
         }
 
