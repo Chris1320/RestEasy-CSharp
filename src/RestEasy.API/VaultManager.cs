@@ -202,4 +202,27 @@ class VaultManager
             this.restic_bin
         ).Backup(this.config.restic_repos[repo_name].backup_filepaths);
     }
+
+    /// <summary>
+    /// Remove a repository from the vault.
+    /// </summary>
+    /// <param name="repo_name">The name of the repository to remove.</param>
+    public void RemoveRepository(string repo_name)
+    {
+        if (this._config == null)
+            throw new VaultNotLoadedException("The vault has not been loaded yet.");
+
+        if (!this.config.restic_repos.ContainsKey(repo_name))
+            throw new RepositoryNotFoundException($"The repository `{repo_name}` does not exist.");
+
+        var repo_path = Path.Combine(this.repos_dir, repo_name);
+
+        // Try to delete the repository directory first so if it fails,
+        // the vault configuration file won't be modified.
+        if (Directory.Exists(repo_path))
+            Directory.Delete(repo_path, true);
+
+        this._config.restic_repos.Remove(repo_name);
+        this.SaveVault();
+    }
 }
