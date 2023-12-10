@@ -69,22 +69,24 @@ public class InfoCommand : Command<InfoCommand.Settings>
                 $"[bold]Information about vault [green]{vault.vault_name}[/][/]",
                 alignment: Justify.Center
             );
-
-            var repo_list = new Columns(
-                vault
-                    .config
-                    .restic_repos
-                    .Keys
-                    .Select(repo => new Text(repo, new Style(foreground: Color.Blue)))
-            ).Padding(2, 0, 2, 0);
-            var repo_list_panel = new Panel(repo_list);
-            repo_list_panel.Header = new PanelHeader(
-                $"[bold]Repositories in vault [green]{vault.vault_name}[/][/]",
-                alignment: Justify.Center
-            );
-
             AnsiConsole.Write(vault_info_panel);
-            AnsiConsole.Write(repo_list_panel);
+
+            if (vault.config.restic_repos.Count != 0)
+            {
+                var repo_list = new Columns(
+                    vault
+                        .config
+                        .restic_repos
+                        .Keys
+                        .Select(repo => new Text(repo, new Style(foreground: Color.Blue)))
+                ).Padding(2, 0, 2, 0);
+                var repo_list_panel = new Panel(repo_list);
+                repo_list_panel.Header = new PanelHeader(
+                    $"[bold]Repositories in vault [green]{vault.vault_name}[/][/]",
+                    alignment: Justify.Center
+                );
+                AnsiConsole.Write(repo_list_panel);
+            }
             return 0;
         }
 
