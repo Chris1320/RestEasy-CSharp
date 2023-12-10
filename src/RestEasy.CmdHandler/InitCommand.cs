@@ -20,7 +20,7 @@ class InitCommand : Command<InitCommand.Settings>
 
         [Description("Specify the vault directory.")]
         [CommandOption("-v|--vault")]
-        public string? data_dir { get; init; }
+        public string data_dir { get; init; } = String.Empty;
 
         [Description("Specify the password for the repositories in the vault.")]
         [CommandOption("-p|--password")]
@@ -29,12 +29,16 @@ class InitCommand : Command<InitCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
-        VaultManager vault =
-            settings.data_dir == null ? new VaultManager() : new VaultManager(settings.data_dir);
-
         try
         {
+            var vault = new VaultManager(settings.data_dir);
             vault.CreateVault(settings.vault_password, settings.max_snapshots);
+            AnsiConsole.Write(
+                new Markup(
+                    CLIHelper.Note($"The vault was created successfully in `{vault.data_dir}`.\n")
+                )
+            );
+            return 0;
         }
         catch (VaultAlreadyExists e)
         {
@@ -46,12 +50,5 @@ class InitCommand : Command<InitCommand.Settings>
             AnsiConsole.WriteException(e);
             return 1;
         }
-        AnsiConsole.Write(
-            new Markup(
-                CLIHelper.Note($"The vault was created successfully in `{vault.data_dir}`.\n")
-            )
-        );
-
-        return 0;
     }
 }
