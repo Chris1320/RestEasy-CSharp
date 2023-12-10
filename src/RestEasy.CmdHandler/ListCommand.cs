@@ -16,16 +16,14 @@ public class ListCommand : Command<ListCommand.Settings>
     {
         [Description("Specify the vault directory.")]
         [CommandOption("-v|--vault")]
-        public string? data_dir { get; init; }
+        public string data_dir { get; init; } = String.Empty;
     }
 
     public override int Execute(CommandContext context, Settings settings)
     {
         try
         {
-            var vault = settings.data_dir is null
-                ? new VaultManager()
-                : new VaultManager(settings.data_dir);
+            var vault = new VaultManager(settings.data_dir);
             vault.LoadVault();
 
             if (vault.config.restic_repos.Count == 0)
@@ -33,22 +31,21 @@ public class ListCommand : Command<ListCommand.Settings>
                 AnsiConsole.Write(
                     new Markup(CLIHelper.Note("There are no restic repositories in this vault.\n"))
                 );
+                return 0;
             }
-            else
-            {
-                var table = new Table();
-                table.AddColumn("Repository");
-                table.AddColumn("Backup Filepaths");
-                table.AddColumn("Maximum Snapshots");
-                foreach (var repo in vault.config.restic_repos)
-                    table.AddRow(
-                        new Text(repo.Key),
-                        new Text(repo.Value.backup_filepaths.Count.ToString()),
-                        new Text(repo.Value.max_snapshots.ToString())
-                    );
 
-                AnsiConsole.Write(table);
-            }
+            var table = new Table();
+            table.AddColumn("Repository");
+            table.AddColumn("Backup Filepaths");
+            table.AddColumn("Maximum Snapshots");
+            foreach (var repo in vault.config.restic_repos)
+                table.AddRow(
+                    new Text(repo.Key),
+                    new Text(repo.Value.backup_filepaths.Count.ToString()),
+                    new Text(repo.Value.max_snapshots.ToString())
+                );
+
+            AnsiConsole.Write(table);
             return 0;
         }
         catch (InvalidVaultException e)

@@ -1,5 +1,6 @@
 ﻿using RestEasy.CmdHandler;
 using RestEasy.Core;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace RestEasy;
@@ -8,6 +9,7 @@ class RestEasy
 {
     public static int Main(string[] args)
     {
+        AnsiConsole.Write(new Markup($"{Info.Title}\n\n"));
         var cmd_handler = new CommandApp();
         cmd_handler.Configure(config =>
         {
