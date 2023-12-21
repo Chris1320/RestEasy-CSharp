@@ -14,7 +14,7 @@ public class BackupCommand : Command<BackupCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [Description("The repositories to back up.")]
+        [Description("The repositories to back up. (use `*` to backup all repositories)")]
         [CommandArgument(0, "<target>")]
         public string[] targets { get; init; } = Array.Empty<string>();
 
@@ -29,14 +29,6 @@ public class BackupCommand : Command<BackupCommand.Settings>
 
     public override int Execute(CommandContext context, Settings settings)
     {
-        if (settings.targets.Length == 0)
-        {
-            AnsiConsole.Write(
-                new Markup(CLIHelper.Error("There should be at least one target to back up.\n"))
-            );
-            return 1;
-        }
-
         try
         {
             var backup_statistics = AnsiConsole
