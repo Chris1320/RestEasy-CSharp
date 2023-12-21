@@ -17,6 +17,20 @@ RestEasy attempts to bring the features of game save backup tools to restic,
 while also providing backup automations for non-game data such as texts, media
 files, or even Podman/Docker containers.
 
+**Features**:
+
+- Basic restic features
+  - [x] File/Directory backups
+  - [ ] Backup restoration (restore manually for now)
+- RestEasy features
+  - [ ] Repository tags/groups
+  - [ ] (_Windows_) Registry backups
+  - [ ] Automatic game save detection
+  - [ ] Podman/Docker volume backups
+  - [ ] (_Windows_) WSL data backups from Windows host
+
+## Usage Examples
+
 ```bash
 resteasy init  # Create a new RestEasy vault in ~/.config/resteasy/vault/
 
