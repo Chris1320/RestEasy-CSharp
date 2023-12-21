@@ -81,6 +81,7 @@ public class InfoCommand : Command<InfoCommand.Settings>
                         .Select(repo => new Text(repo, new Style(foreground: Color.Blue)))
                 ).Padding(2, 0, 2, 0);
                 var repo_list_panel = new Panel(repo_list);
+                repo_list_panel.Expand = true;
                 repo_list_panel.Header = new PanelHeader(
                     $"[bold]Repositories in vault [green]{vault.vault_name}[/][/]",
                     alignment: Justify.Center
@@ -135,6 +136,7 @@ public class InfoCommand : Command<InfoCommand.Settings>
                 )
         ).Padding(2, 0, 2, 0);
         var bkfp_list_panel = new Panel(bkfp_list);
+        bkfp_list_panel.Expand = true;
         bkfp_list_panel.Header = new PanelHeader(
             $"[bold]Backup filepaths in repository [green]{settings.repo_name}[/] from vault [blue]{vault.vault_name}[/][/]",
             alignment: Justify.Center
