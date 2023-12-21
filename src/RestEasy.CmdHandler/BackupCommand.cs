@@ -31,20 +31,24 @@ public class BackupCommand : Command<BackupCommand.Settings>
     {
         try
         {
+            var vault = new VaultManager(settings.data_dir, settings.restic_bin);
+            vault.LoadVault();
+            var targets = settings.targets[0].Equals("*")
+                ? vault.config.restic_repos.Keys.ToArray()
+                : settings.targets;
+
             var backup_statistics = AnsiConsole
                 .Progress()
                 .Start(ctx =>
                 {
                     var task = ctx.AddTask(
                         "Performing backup operation...",
-                        maxValue: settings.targets.Length
+                        maxValue: targets.Length
                     );
-                    var vault = new VaultManager(settings.data_dir, settings.restic_bin);
                     int failed = 0;
                     int successful = 0;
-                    vault.LoadVault();
 
-                    foreach (var target in settings.targets)
+                    foreach (var target in targets)
                     {
                         try
                         {
