@@ -1,4 +1,6 @@
+using RestEasy.Core;
 using RestEasy.Exceptions;
+using RestEasy.Helpers;
 using RestEasy.Models;
 
 namespace RestEasy.API;
@@ -19,7 +21,11 @@ public class ResticManager
     {
         this.repo_path = repo_path;
         this.repo_password = repo_password;
-        this.restic_path = restic_path ?? "restic"; // WARN: Sanitize this
+        this.restic_path = File.Exists(restic_path)
+            ? restic_path
+            : null // Should we throw an exception instead of falling back to the default restic path?
+                ?? FilesystemHelper.FindExecutable(Info.ResticExecutableName)
+                ?? throw new ResticException("Could not find restic executable.");
     }
 
     /// <summary>
