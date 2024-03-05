@@ -5,7 +5,7 @@ public class RestoreCommand : Command<RestoreCommand.Settings>
 {
     public class Settings : CommandSettings
     {
-        [Description("The repositories to restore.")]
+        [Description("The repositories to restore. (use `*` to restore all repositories)")]
         [CommandArgument(0, "<repositories>")]
         public string[] repositories { get; init; } = Array.Empty<string>();
     }
