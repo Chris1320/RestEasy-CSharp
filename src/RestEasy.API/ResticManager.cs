@@ -92,12 +92,14 @@ public class ResticManager
     /// </summary>
     ///
     /// <param name="backup_filepaths">The list of files and/or directories to back up.</param>
+    /// <param name="tags">The tags to apply to the backup.</param>
     ///
     /// <returns>The result of the command.</returns>
-    public ProcessResult Backup(List<string> backup_filepaths)
+    public ProcessResult Backup(List<string> backup_filepaths, List<string>? tags = null)
     {
+        tags ??= new List<string> { $"{Info.Name}-v{string.Join(".", Info.Version)}" };
         var result = this.Run(
-            $"backup {string.Join(" ", backup_filepaths.Select(filepath => $"\"{filepath}\""))}"
+            $"backup --tag \"{string.Join(",", tags)}\" {string.Join(" ", backup_filepaths.Select(filepath => $"\"{filepath}\""))}"
         );
         if (result.exit_code != 0)
             throw new ResticException(result.error);
